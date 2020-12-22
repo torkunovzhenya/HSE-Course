@@ -59,7 +59,7 @@ TEST(Similarity, Test1) {
         Point d(1, 0);
         vec = {a, b, c, d};
     }
-    
+
     Polygon actual(vec);
 
     {
@@ -84,7 +84,7 @@ TEST(Similarity, Test2) {
         Point d(1, 0);
         vec = {a, b, c, d};
     }
-    
+
     Polygon actual(vec);
 
     {
@@ -108,7 +108,7 @@ TEST(Congruent, Congruent) {
         Point d(1, 0);
         vec = {a, b, c, d};
     }
-    
+
     Polygon actual(vec);
 
     actual.rotate({0, 0}, 45);
@@ -120,7 +120,7 @@ TEST(Congruent, Congruent) {
         Point d(1, -1);
         vec = {a, b, c, d};
     }
-    
+
 
     Polygon expected(vec);
 
@@ -138,7 +138,7 @@ TEST(Area, TrianglePolygons) {
 
     std::vector<Point> vec = {a, b, d, c};
     Polygon poly(vec);
-    
+
     ASSERT_NEAR(poly.area(), triangle1.area() + triangle2.area(),1e-6);
 }
 
@@ -152,7 +152,7 @@ TEST(Transformations, Test1) {
 
         vec = {a, b, c, d};
     }
-  
+
     Polygon actual(vec);
     actual.rotate(Point(0,0), 45);
     actual.scale(Point(0,0), 20);
@@ -165,7 +165,7 @@ TEST(Transformations, Test1) {
 
         vec = {a, b, c, d};
     }
-  
+
     Polygon expected(vec);
 
     ASSERT_TRUE(actual == expected);
@@ -187,7 +187,7 @@ TEST(Transformations, Test2) {
     actual.rotate(a , 45);
     Line line(a, {1, 1});
     actual.reflex(line);
-    actual.scale(a, 0.05);   
+    actual.scale(a, 0.05);
 
     ASSERT_TRUE(actual == expected);
 }
@@ -197,7 +197,7 @@ TEST(Rectangle, Test1) {
     Point b(2.5, 3.0);
     Point c(1.0, 3.0);
     double ratio = 0.5;
-    
+
     Rectangle rectangle(a, b, ratio);
     Triangle triangle(a, b, c);
     ASSERT_NEAR(rectangle.area(), 2 * triangle.area(), 1e-6);
@@ -255,9 +255,44 @@ TEST(Ellipse, Area) {
     Point p2(c, 0.0);
     Ellipse ellipse(p1, p2, 2 * a);
     double pi = 3.1415926;
-    
+
     double area = pi * a * b;
     ASSERT_NEAR(ellipse.area(), area, 1e-6);
+}
+
+TEST(Triangle, inscribedCircle){
+    double cy = 8 + 1.0 / 3;
+
+    Point a(-5, 0);
+    Point b(5, 0);
+    Point c(0, cy);
+
+    double side = std::sqrt(5 * 5 + cy * cy);
+
+    Triangle triangle(a, b, c);
+    Circle circle = triangle.inscribedCircle();
+
+    double s = 5 * cy;
+    double p = 2 * side + 10;
+    double radius = 2 * s / p;
+
+    ASSERT_TRUE(circle.center() == Point(0, radius));
+    ASSERT_NEAR(circle.radius(), radius, 1e-6);
+}
+
+TEST(Triangle, circumscribedCircle){
+
+    Point a(0, 4);
+    Point b(2, 0);
+    Point c(0, 0);
+
+    Triangle triangle(a, b, c);
+    Circle circle = triangle.circumscribedCircle();
+
+    double radius = std::sqrt(5);
+
+    ASSERT_TRUE(circle.center() == Point(1, 2));
+    ASSERT_NEAR(circle.radius(), radius, 1e-6);
 }
 
 int main(int argc, char** argv) {
